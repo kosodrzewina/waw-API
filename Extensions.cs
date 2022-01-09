@@ -4,9 +4,9 @@ public static class Extensions
 {
     public static string GetUrl(this EventType eventType)
     {
-        var baseUrl = "https://waw4free.pl/rss";
-        var categoryUrl = $"{baseUrl}-kategoria=";
-        var districtUrl = $"{baseUrl}-dzielnica=";
+        const string baseUrl = "https://waw4free.pl/rss";
+        const string categoryUrl = $"{baseUrl}-kategoria=";
+        const string districtUrl = $"{baseUrl}-dzielnica=";
 
         return eventType switch
         {
