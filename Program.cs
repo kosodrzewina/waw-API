@@ -18,7 +18,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var eventFetcher = new EventFetcher("https://waw4free.pl/rss-dzisiaj");
+var eventFetcher = new EventFetcher(EventType.Today.GetUrl());
 var events = await eventFetcher.Fetch();
 
 app.UseHttpsRedirection();
