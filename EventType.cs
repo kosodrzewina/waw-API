@@ -39,5 +39,5 @@ public enum EventType
     Wlochy,
     Wola,
     Zoliborz,
-    OutsideTheCity,
+    OutsideTheCity
 }
