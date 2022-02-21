@@ -2,6 +2,7 @@
 
 public class Event
 {
+    public int IdEvent { get; set; }
     public string Title { get; set; } = "Title";
     public string Description { get; set; } = "Description";
     public string Link { get; set; } = "Link";

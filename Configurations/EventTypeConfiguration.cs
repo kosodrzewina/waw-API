@@ -1,0 +1,18 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WawAPI.Models;
+
+namespace WawAPI.Configurations;
+
+public class EventTypeConfiguration : IEntityTypeConfiguration<Event>
+{
+    public void Configure(EntityTypeBuilder<Event> builder)
+    {
+        builder.HasKey(e => e.IdEvent);
+        builder.Property(e => e.IdEvent).ValueGeneratedOnAdd();
+        builder.Property(e => e.Title).IsRequired().HasMaxLength(250);
+        builder.Property(e => e.Description).IsRequired().HasMaxLength(8000);
+        builder.Property(e => e.Link).IsRequired().HasMaxLength(1000);
+        builder.Property(e => e.Guid).IsRequired().HasMaxLength(1000);
+    }
+}
