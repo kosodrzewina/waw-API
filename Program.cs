@@ -18,7 +18,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var eventFetcher = new EventFetcher(EventType.Today.GetUrl());
+var eventFetcher = new EventFetcher(
+    EventType.Today,
+    EventType.Latest
+);
 var events = await eventFetcher.Fetch();
 
 app.UseHttpsRedirection();
