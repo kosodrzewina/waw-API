@@ -9,7 +9,7 @@ public class EventFetcher
 
     public EventFetcher(params EventType[] eventTypes)
     {
-        _eventTypes = eventTypes.Where(e => IsUrlValid(e.GetUrl())).ToArray();
+        _eventTypes = eventTypes.Where(e => IsUrlValid(e.Address)).ToArray();
     }
 
     public static bool IsUrlValid(string address)
@@ -24,7 +24,9 @@ public class EventFetcher
 
         foreach (var eventType in _eventTypes)
         {
-            var httpResponseMessage = await httpClient.GetAsync(eventType.GetUrl());
+            System.Diagnostics.Debug.WriteLine($"Fetching event {eventType.Name}...");
+
+            var httpResponseMessage = await httpClient.GetAsync(eventType.Address);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,7 +34,7 @@ public class EventFetcher
                 continue;
             }
 
-            var feed = XDocument.Load(eventType.GetUrl());
+            var feed = XDocument.Load(eventType.Address);
 
             events.Add(
                 eventType,
