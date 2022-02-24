@@ -20,5 +20,6 @@ public class MainDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new EventTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new EventTypeTypeConfiguration());
     }
 }

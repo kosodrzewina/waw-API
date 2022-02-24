@@ -2,11 +2,13 @@
 
 public class Event
 {
-    public int IdEvent { get; set; }
-    public string Title { get; set; } = "Title";
-    public string Description { get; set; } = "Description";
-    public string Link { get; set; } = "Link";
-    public string Guid { get; set; } = "Guid";
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string Link { get; set; }
+    public string Guid { get; set; }
+    public int IdEventType { get; set; }
+    public EventType Type { get; set; }
 
     public override string ToString()
     {

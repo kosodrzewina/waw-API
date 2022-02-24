@@ -23,11 +23,11 @@ namespace WawAPI.Migrations
 
             modelBuilder.Entity("WawAPI.Models.Event", b =>
                 {
-                    b.Property<int>("IdEvent")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEvent"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -39,6 +39,9 @@ namespace WawAPI.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int>("IdEventType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Link")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -49,9 +52,45 @@ namespace WawAPI.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.HasKey("IdEvent");
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdEventType");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("WawAPI.Models.EventType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventType");
+                });
+
+            modelBuilder.Entity("WawAPI.Models.Event", b =>
+                {
+                    b.HasOne("WawAPI.Models.EventType", "Type")
+                        .WithMany("Events")
+                        .HasForeignKey("IdEventType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("WawAPI.Models.EventType", b =>
+                {
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }
