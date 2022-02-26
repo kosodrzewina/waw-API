@@ -5,6 +5,7 @@ namespace WawAPI.Models;
 public class MainDbContext : DbContext
 {
     public DbSet<Event> Events { get; set; }
+    public DbSet<EventType> EventTypes { get; set; }
 
     public MainDbContext() {}
 
