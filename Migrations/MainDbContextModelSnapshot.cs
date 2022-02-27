@@ -56,7 +56,7 @@ namespace WawAPI.Migrations
 
                     b.HasIndex("IdEventType");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("WawAPI.Models.EventType", b =>
@@ -74,7 +74,7 @@ namespace WawAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EventTypes");
+                    b.ToTable("EventTypes", (string)null);
 
                     b.HasData(
                         new

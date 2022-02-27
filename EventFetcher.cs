@@ -5,9 +5,10 @@ namespace WawAPI;
 
 public class EventFetcher
 {
-    private readonly EventType[] _eventTypes;
+    private readonly EventTypeEnum[] _eventTypes;
+    public List<Event> LastFetched { get; private set; } = new();
 
-    public EventFetcher(params EventType[] eventTypes)
+    public EventFetcher(params EventTypeEnum[] eventTypes)
     {
         _eventTypes = eventTypes.Where(e => IsUrlValid(e.Address)).ToArray();
     }
@@ -17,9 +18,9 @@ public class EventFetcher
         return Uri.TryCreate(address, UriKind.Absolute, out Uri? uri)
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
-    public async Task<IDictionary<EventType, ICollection<Event>?>> Fetch()
+    public async Task Fetch()
     {
-        var events = new Dictionary<EventType, ICollection<Event>?>();
+        var events = new List<Event>();
         using var httpClient = new HttpClient();
 
         foreach (var eventType in _eventTypes)
@@ -30,14 +31,13 @@ public class EventFetcher
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                events.Add(eventType, null);
+                // TODO: do something
                 continue;
             }
 
             var feed = XDocument.Load(eventType.Address);
 
-            events.Add(
-                eventType,
+            events.AddRange(
                 feed.Descendants()
                 .Where(item => item.Name == "item")
                 .Select(item =>
@@ -60,12 +60,13 @@ public class EventFetcher
                             "An error occurred when fetching link",
                         Guid = guid != null && guid.Value != null ?
                             guid.Value :
-                            "An error occurred when fetching guid"
+                            "An error occurred when fetching guid",
+                        TypeEnum = eventType
                     };
-                }).ToList()
+                })
             );
         }
 
-        return events;
+        LastFetched = events;
     }
 }

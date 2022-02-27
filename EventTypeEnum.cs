@@ -1,6 +1,6 @@
 ﻿namespace WawAPI;
 
-public class EventType : Enumeration
+public class EventTypeEnum : Enumeration
 {
     private const string _baseUrl = "https://waw4free.pl/rss";
     private const string _categoryUrl = $"{_baseUrl}-kategoria=";
@@ -8,7 +8,7 @@ public class EventType : Enumeration
 
     public string Address { get; private set; }
 
-    public static readonly EventType
+    public static readonly EventTypeEnum
         Today = new(0, nameof(Today), $"{_baseUrl}-dzisiaj"),
         Latest = new(1, nameof(Latest), $"{_baseUrl}-ostatnie"),
         ForKids = new(2, nameof(ForKids), $"{_categoryUrl}dzieci"),
@@ -48,5 +48,5 @@ public class EventType : Enumeration
         Zoliborz = new(36, nameof(Zoliborz), $"{_districtUrl}zoliborz"),
         OutsideTheCity = new(37, nameof(OutsideTheCity), $"{_districtUrl}okolice");
 
-    public EventType(int id, string name, string address) : base(id, name) => Address = address;
+    public EventTypeEnum(int id, string name, string address) : base(id, name) => Address = address;
 }
