@@ -17,7 +17,7 @@ public class EventTypeTypeConfiguration : IEntityTypeConfiguration<Models.EventT
             Enumeration.GetAll<EventTypeEnum>().Select(e =>
                new Models.EventType
                {
-                   Id = e.Id + 1,
+                   Id = e.Id,
                    Name = e.Name
                }
             )
