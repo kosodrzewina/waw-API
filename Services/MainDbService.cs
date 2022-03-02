@@ -20,26 +20,18 @@ public class MainDbService : IDatabaseService
                 _context.EventTypes,
                 e => e.IdEventType,
                 t => t.Id,
-                (e, t) => new
+                (e, t) => new EventDto
                 {
-                    e.Title,
-                    e.Description,
-                    e.Link,
-                    EventTypeName = t.Name
+                    Title = e.Title,
+                    Description = e.Description,
+                    Link = e.Link,
+                    Type = t.Name
                 }
             );
 
         if (query.Any())
         {
-            var @event = query.First();
-
-            return new EventDto
-            {
-                Title = @event.Title,
-                Description = @event.Description,
-                Link = @event.Link,
-                Type = @event.EventTypeName
-            };
+            return query.First();
         }
 
         return null;
