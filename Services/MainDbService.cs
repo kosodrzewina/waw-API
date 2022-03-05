@@ -55,6 +55,6 @@ public class MainDbService : IDatabaseService
                     }
             )
             .GroupBy(e => e.Type)
-            .ToDictionary(g => g.Key, g => g.ToList());
+            .ToDictionary(g => g.Key, e => e.ToList());
     }
 }
