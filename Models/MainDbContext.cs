@@ -2,14 +2,15 @@
 using WawAPI.Configurations;
 
 namespace WawAPI.Models;
+
 public class MainDbContext : DbContext
 {
     public DbSet<Event> Events { get; set; }
     public DbSet<EventType> EventTypes { get; set; }
 
-    public MainDbContext() {}
+    public MainDbContext() { }
 
-    public MainDbContext(DbContextOptions options) : base(options) {}
+    public MainDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

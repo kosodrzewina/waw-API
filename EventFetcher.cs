@@ -18,6 +18,7 @@ public class EventFetcher
         return Uri.TryCreate(address, UriKind.Absolute, out Uri? uri)
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
+
     public async Task Fetch()
     {
         var events = new List<Event>();
@@ -39,32 +40,38 @@ public class EventFetcher
 
             events.AddRange(
                 feed.Descendants()
-                .Where(item => item.Name == "item")
-                .Select(item =>
-                {
-                    var title = item.Element("title");
-                    var description = item.Element("description");
-                    var link = item.Element("link");
-                    var guid = item.Element("guid");
+                    .Where(item => item.Name == "item")
+                    .Select(
+                        item =>
+                        {
+                            var title = item.Element("title");
+                            var description = item.Element("description");
+                            var link = item.Element("link");
+                            var guid = item.Element("guid");
 
-                    return new Event
-                    {
-                        // TODO: error messages should not be the params values
-                        Title = title != null && title.Value != null ?
-                            title.Value :
-                            "An error occurred when fetching title",
-                        Description = description != null && description.Value != null ?
-                            description.Value :
-                            "An error occurred when fetching description",
-                        Link = link != null && link.Value != null ?
-                            link.Value :
-                            "An error occurred when fetching link",
-                        Guid = guid != null && guid.Value != null ?
-                            guid.Value :
-                            "An error occurred when fetching guid",
-                        TypeEnum = eventType
-                    };
-                })
+                            return new Event
+                            {
+                                // TODO: error messages should not be the params values
+                                Title =
+                                    title != null && title.Value != null
+                                        ? title.Value
+                                        : "An error occurred when fetching title",
+                                Description =
+                                    description != null && description.Value != null
+                                        ? description.Value
+                                        : "An error occurred when fetching description",
+                                Link =
+                                    link != null && link.Value != null
+                                        ? link.Value
+                                        : "An error occurred when fetching link",
+                                Guid =
+                                    guid != null && guid.Value != null
+                                        ? guid.Value
+                                        : "An error occurred when fetching guid",
+                                TypeEnum = eventType
+                            };
+                        }
+                    )
             );
         }
 

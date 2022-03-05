@@ -8,8 +8,7 @@ public class EventTypeEnum : Enumeration
 
     public string Address { get; private set; }
 
-    public static readonly EventTypeEnum
-        Today = new(1, nameof(Today), $"{_baseUrl}-dzisiaj"),
+    public static readonly EventTypeEnum Today = new(1, nameof(Today), $"{_baseUrl}-dzisiaj"),
         Latest = new(2, nameof(Latest), $"{_baseUrl}-ostatnie"),
         ForKids = new(3, nameof(ForKids), $"{_categoryUrl}dzieci"),
         Movies = new(4, nameof(Movies), $"{_categoryUrl}filmy"),

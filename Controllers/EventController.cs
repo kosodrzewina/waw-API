@@ -28,18 +28,21 @@ public class EventController : ControllerBase
     public IActionResult GetEvents([FromQuery] string[] eventTypes)
     {
         List<string> notFound = new();
-        var types = eventTypes.Select(t =>
-            {
-                var @enum = Enumeration.Get<EventTypeEnum>(t);
-
-                if (@enum == null)
+        var types = eventTypes
+            .Select(
+                t =>
                 {
-                    notFound.Add(t);
-                }
+                    var @enum = Enumeration.Get<EventTypeEnum>(t);
 
-                return @enum;
-            }
-        ).ToArray();
+                    if (@enum == null)
+                    {
+                        notFound.Add(t);
+                    }
+
+                    return @enum;
+                }
+            )
+            .ToArray();
 
         if (notFound.Count != 0)
         {

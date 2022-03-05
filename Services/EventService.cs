@@ -6,7 +6,7 @@ public class EventService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public EventService(IServiceScopeFactory serviceScopeFactory) => 
+    public EventService(IServiceScopeFactory serviceScopeFactory) =>
         (_serviceScopeFactory) = (serviceScopeFactory);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -15,9 +15,15 @@ public class EventService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            System.Diagnostics.Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} Fetching all events...");
+            System.Diagnostics.Debug.WriteLine(
+                LogLevel.Information,
+                $"{DateTime.Now} Fetching all events..."
+            );
             await eventFetcher.Fetch();
-            System.Diagnostics.Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} All events have been fetched");
+            System.Diagnostics.Debug.WriteLine(
+                LogLevel.Information,
+                $"{DateTime.Now} All events have been fetched"
+            );
 
             SaveToDb(eventFetcher.LastFetched);
 
@@ -31,29 +37,30 @@ public class EventService : BackgroundService
         var context = scope.ServiceProvider.GetRequiredService<MainDbContext>();
 
         context.AddRange(
-            events.Where(e =>
-                !context.Events.Join(
-                    context.EventTypes,
-                    eDb => eDb.IdEventType,
-                    t => t.Id,
-                    (eDb, t) => new
-                    {
-                        IdEventType = t.Id,
-                        eDb.Guid
-                    }
-                ).Where(joined =>
-                    joined.IdEventType.Equals(e.TypeEnum.Id)
-                ).Any(joined =>
-                    joined.Guid.Equals(e.Guid)
+            events
+                .Where(
+                    e =>
+                        !context.Events
+                            .Join(
+                                context.EventTypes,
+                                eDb => eDb.IdEventType,
+                                t => t.Id,
+                                (eDb, t) => new { IdEventType = t.Id, eDb.Guid }
+                            )
+                            .Where(joined => joined.IdEventType.Equals(e.TypeEnum.Id))
+                            .Any(joined => joined.Guid.Equals(e.Guid))
                 )
-            ).Select(e => new Event
-            {
-                Title = e.Title,
-                Description = e.Description,
-                Link = e.Link,
-                Guid = e.Guid,
-                IdEventType = e.TypeEnum.Id
-            })
+                .Select(
+                    e =>
+                        new Event
+                        {
+                            Title = e.Title,
+                            Description = e.Description,
+                            Link = e.Link,
+                            Guid = e.Guid,
+                            IdEventType = e.TypeEnum.Id
+                        }
+                )
         );
         context.SaveChanges();
     }
