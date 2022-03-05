@@ -11,7 +11,7 @@ public class EventController : ControllerBase
 
     public EventController(IDatabaseService databaseService) => _databaseService = databaseService;
 
-    [HttpGet("event")]
+    [HttpGet("by-guid")]
     public IActionResult GetEvent(string guid)
     {
         var response = _databaseService.GetEvent(guid);
@@ -24,7 +24,7 @@ public class EventController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("events")]
+    [HttpGet("by-types")]
     public IActionResult GetEvents([FromQuery] string[] eventTypes)
     {
         List<string> notFound = new();
