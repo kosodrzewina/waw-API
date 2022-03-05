@@ -10,9 +10,22 @@ public abstract class Enumeration
     protected Enumeration(int id, string name) => (Id, Name) = (id, name);
 
     public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
-            typeof(T).GetFields(BindingFlags.Public |
-                                BindingFlags.Static |
-                                BindingFlags.DeclaredOnly)
-                     .Select(f => f.GetValue(null))
-                     .Cast<T>();
+            typeof(T).GetFields(
+                BindingFlags.Public |
+                BindingFlags.Static |
+                BindingFlags.DeclaredOnly
+            )
+            .Select(f => f.GetValue(null))
+            .Cast<T>();
+
+    public static T? Get<T>(string name) where T : Enumeration
+    {
+         return typeof(T).GetFields(
+            BindingFlags.Public |
+            BindingFlags.Static |
+            BindingFlags.DeclaredOnly
+        )
+        .Select(f => f.GetValue(null))
+        .Cast<T>().Where(e => e.Name.Equals(name)).FirstOrDefault();
+    }
 }
