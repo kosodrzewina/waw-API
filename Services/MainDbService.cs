@@ -15,7 +15,7 @@ public class MainDbService : IDatabaseService
 
     public EventDto? GetEvent(string guid)
     {
-        var query = _context.Events
+        return _context.Events
             .Where(e => e.Guid.Equals(guid))
             .Join(
                 _context.EventTypes,
@@ -28,14 +28,7 @@ public class MainDbService : IDatabaseService
                     Link = e.Link,
                     Type = t.Name
                 }
-            );
-
-        if (query.Any())
-        {
-            return query.First();
-        }
-
-        return null;
+            ).FirstOrDefault();
     }
 
     public IDictionary<string, List<EventDto>> GetEvents(params EventTypeEnum[] eventTypes)
