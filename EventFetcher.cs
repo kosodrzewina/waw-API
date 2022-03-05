@@ -49,6 +49,7 @@ public class EventFetcher
 
                     return new Event
                     {
+                        // TODO: error messages should not be the params values
                         Title = title != null && title.Value != null ?
                             title.Value :
                             "An error occurred when fetching title",
