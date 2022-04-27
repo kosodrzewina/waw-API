@@ -1,4 +1,3 @@
-using WawAPI;
 using WawAPI.Models;
 using WawAPI.Services;
 

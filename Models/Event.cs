@@ -1,4 +1,6 @@
-﻿namespace WawAPI.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WawAPI.Models;
 
 public class Event
 {
@@ -10,8 +12,7 @@ public class Event
     public int IdEventType { get; set; }
     public EventType Type { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
-    public EventTypeEnum TypeEnum { get; set; }
+    [NotMapped] public EventTypeEnum TypeEnum { get; set; }
 
     public override string ToString()
     {

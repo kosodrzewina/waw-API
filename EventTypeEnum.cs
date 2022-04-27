@@ -6,8 +6,6 @@ public class EventTypeEnum : Enumeration
     private const string _categoryUrl = $"{_baseUrl}-kategoria=";
     private const string _districtUrl = $"{_baseUrl}-dzielnica=";
 
-    public string Address { get; private set; }
-
     public static readonly EventTypeEnum Today = new(1, nameof(Today), $"{_baseUrl}-dzisiaj"),
         Latest = new(2, nameof(Latest), $"{_baseUrl}-ostatnie"),
         ForKids = new(3, nameof(ForKids), $"{_categoryUrl}dzieci"),
@@ -47,5 +45,10 @@ public class EventTypeEnum : Enumeration
         Zoliborz = new(37, nameof(Zoliborz), $"{_districtUrl}zoliborz"),
         OutsideTheCity = new(38, nameof(OutsideTheCity), $"{_districtUrl}okolice");
 
-    public EventTypeEnum(int id, string name, string address) : base(id, name) => Address = address;
+    public EventTypeEnum(int id, string name, string address) : base(id, name)
+    {
+        Address = address;
+    }
+
+    public string Address { get; }
 }

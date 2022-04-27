@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Diagnostics;
+using System.Xml.Linq;
 using WawAPI.Models;
 
 namespace WawAPI;
@@ -6,17 +7,18 @@ namespace WawAPI;
 public class EventFetcher
 {
     private readonly EventTypeEnum[] _eventTypes;
-    public List<Event> LastFetched { get; private set; } = new();
 
     public EventFetcher(params EventTypeEnum[] eventTypes)
     {
         _eventTypes = eventTypes.Where(e => IsUrlValid(e.Address)).ToArray();
     }
 
+    public List<Event> LastFetched { get; private set; } = new();
+
     public static bool IsUrlValid(string address)
     {
-        return Uri.TryCreate(address, UriKind.Absolute, out Uri? uri)
-            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+        return Uri.TryCreate(address, UriKind.Absolute, out var uri)
+               && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
     public async Task Fetch()
@@ -26,15 +28,13 @@ public class EventFetcher
 
         foreach (var eventType in _eventTypes)
         {
-            System.Diagnostics.Debug.WriteLine($"Fetching event {eventType.Name}...");
+            Debug.WriteLine($"Fetching event {eventType.Name}...");
 
             var httpResponseMessage = await httpClient.GetAsync(eventType.Address);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
-            {
                 // TODO: do something
                 continue;
-            }
 
             var feed = XDocument.Load(eventType.Address);
 

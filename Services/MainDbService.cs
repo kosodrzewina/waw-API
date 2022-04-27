@@ -40,7 +40,7 @@ public class MainDbService : IDatabaseService
                 _context.EventTypes,
                 e => e.IdEventType,
                 t => t.Id,
-                (e, t) => new { e.Title, e.Description, e.Link, TypeId = t.Id, TypeName = t.Name }
+                (e, t) => new {e.Title, e.Description, e.Link, TypeId = t.Id, TypeName = t.Name}
             )
             .ToList()
             .Where(e => eventTypes.Any(t => t.Id.Equals(e.TypeId)))

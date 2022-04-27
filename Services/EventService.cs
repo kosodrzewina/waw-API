@@ -1,4 +1,5 @@
-﻿using WawAPI.Models;
+﻿using System.Diagnostics;
+using WawAPI.Models;
 
 namespace WawAPI.Services;
 
@@ -6,8 +7,10 @@ public class EventService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public EventService(IServiceScopeFactory serviceScopeFactory) =>
-        (_serviceScopeFactory) = (serviceScopeFactory);
+    public EventService(IServiceScopeFactory serviceScopeFactory)
+    {
+        _serviceScopeFactory = serviceScopeFactory;
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -15,12 +18,12 @@ public class EventService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            System.Diagnostics.Debug.WriteLine(
+            Debug.WriteLine(
                 LogLevel.Information,
                 $"{DateTime.Now} Fetching all events..."
             );
             await eventFetcher.Fetch();
-            System.Diagnostics.Debug.WriteLine(
+            Debug.WriteLine(
                 LogLevel.Information,
                 $"{DateTime.Now} All events have been fetched"
             );
@@ -45,7 +48,7 @@ public class EventService : BackgroundService
                                 context.EventTypes,
                                 eDb => eDb.IdEventType,
                                 t => t.Id,
-                                (eDb, t) => new { IdEventType = t.Id, eDb.Guid }
+                                (eDb, t) => new {IdEventType = t.Id, eDb.Guid}
                             )
                             .Where(joined => joined.IdEventType.Equals(e.TypeEnum.Id))
                             .Any(joined => joined.Guid.Equals(e.Guid))
