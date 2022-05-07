@@ -16,12 +16,6 @@ public class MainDbContext : DbContext
     public DbSet<Event> Events { get; set; }
     public DbSet<EventType> EventTypes { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-        optionsBuilder.UseSqlServer("Server=(LocalDB)\\WawServer; Database=WawDB");
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

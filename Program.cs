@@ -1,28 +1,28 @@
+using Microsoft.EntityFrameworkCore;
 using WawAPI.Models;
 using WawAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+var connectionString = configuration.GetConnectionString("WawDb");
 
-// Add services to the container.
-builder.Services.AddDbContext<MainDbContext>();
+builder.Services.AddDbContext<MainDbContext>(options => { options.UseSqlServer(connectionString); });
 builder.Services.AddHostedService<EventService>();
 builder.Services.AddScoped<IDatabaseService, MainDbService>();
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

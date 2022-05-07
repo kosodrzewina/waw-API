@@ -11,7 +11,12 @@ public interface IDatabaseService
 
 public class MainDbService : IDatabaseService
 {
-    private readonly MainDbContext _context = new();
+    private readonly MainDbContext _context;
+
+    public MainDbService(MainDbContext context)
+    {
+        _context = context;
+    }
 
     public EventDto? GetEvent(string guid)
     {
