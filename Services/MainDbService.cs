@@ -6,7 +6,7 @@ namespace WawAPI.Services;
 public interface IDatabaseService
 {
     public EventDto? GetEvent(string guid);
-    public IDictionary<string, List<EventDto>>? GetEvents(params EventTypeEnum[] eventTypes);
+    public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
 }
 
 public class MainDbService : IDatabaseService
@@ -39,7 +39,7 @@ public class MainDbService : IDatabaseService
             .FirstOrDefault();
     }
 
-    public IDictionary<string, List<EventDto>> GetEvents(params EventTypeEnum[] eventTypes)
+    public List<EventDto> GetEvents(params EventTypeEnum[] eventTypes)
     {
         return _context.Events
             .Join(
@@ -55,21 +55,16 @@ public class MainDbService : IDatabaseService
                     TypeId = t.Id,
                     TypeName = t.Name
                 }
-            )
-            .ToList()
+            ).ToList()
             .Where(e => eventTypes.Any(t => t.Id.Equals(e.TypeId)))
-            .Select(
-                e =>
-                    new EventDto
-                    {
-                        Title = e.Title,
-                        Description = e.Description,
-                        Link = e.Link,
-                        Guid = e.Guid,
-                        Type = e.TypeName
-                    }
-            )
-            .GroupBy(e => e.Type)
-            .ToDictionary(g => g.Key, e => e.ToList());
+            .Select(joinResult => new EventDto
+                {
+                    Title = joinResult.Title,
+                    Description = joinResult.Description,
+                    Link = joinResult.Link,
+                    Guid = joinResult.Guid,
+                    Type = joinResult.TypeName
+                }
+            ).ToList();
     }
 }
