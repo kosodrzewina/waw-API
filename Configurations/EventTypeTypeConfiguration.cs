@@ -15,13 +15,9 @@ public class EventTypeTypeConfiguration : IEntityTypeConfiguration<EventType>
         builder.HasMany(et => et.Events).WithOne(e => e.Type).HasForeignKey(e => e.IdEventType);
 
         builder.HasData(
-            Enumeration.GetAll<EventTypeEnum>().Select(e =>
-                new EventType
-                {
-                    Id = e.Id,
-                    Name = e.Name
-                }
-            )
+            Enumeration
+                .GetAll<EventTypeEnum>()
+                .Select(e => new EventType { Id = e.Id, Name = e.Name })
         );
     }
 }

@@ -19,7 +19,8 @@ public class EventController : ControllerBase
     {
         var response = _databaseService.GetEvent(guid);
 
-        if (response == null) return NotFound($"Event with guid \"{guid}\" does not exist");
+        if (response == null)
+            return NotFound($"Event with guid \"{guid}\" does not exist");
 
         return Ok(response);
     }
@@ -34,14 +35,16 @@ public class EventController : ControllerBase
                 {
                     var @enum = Enumeration.Get<EventTypeEnum>(t);
 
-                    if (@enum == null) notFound.Add(t);
+                    if (@enum == null)
+                        notFound.Add(t);
 
                     return @enum;
                 }
             )
             .ToArray();
 
-        if (notFound.Count != 0) return NotFound($"Following types have not been found: {string.Join(", ", notFound)}");
+        if (notFound.Count != 0)
+            return NotFound($"Following types have not been found: {string.Join(", ", notFound)}");
 
         return Ok(_databaseService.GetEvents(types!));
     }

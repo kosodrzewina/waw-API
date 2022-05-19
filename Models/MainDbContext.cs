@@ -5,13 +5,9 @@ namespace WawAPI.Models;
 
 public class MainDbContext : DbContext
 {
-    public MainDbContext()
-    {
-    }
+    public MainDbContext() { }
 
-    public MainDbContext(DbContextOptions options) : base(options)
-    {
-    }
+    public MainDbContext(DbContextOptions options) : base(options) { }
 
     public DbSet<Event> Events { get; set; }
     public DbSet<EventType> EventTypes { get; set; }

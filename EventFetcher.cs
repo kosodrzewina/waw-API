@@ -18,7 +18,7 @@ public class EventFetcher
     public static bool IsUrlValid(string address)
     {
         return Uri.TryCreate(address, UriKind.Absolute, out var uri)
-               && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
     public async Task Fetch()

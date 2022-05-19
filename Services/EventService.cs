@@ -18,15 +18,9 @@ public class EventService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            Debug.WriteLine(
-                LogLevel.Information,
-                $"{DateTime.Now} Fetching all events..."
-            );
+            Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} Fetching all events...");
             await eventFetcher.Fetch();
-            Debug.WriteLine(
-                LogLevel.Information,
-                $"{DateTime.Now} All events have been fetched"
-            );
+            Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} All events have been fetched");
 
             SaveToDb(eventFetcher.LastFetched);
 
@@ -48,7 +42,7 @@ public class EventService : BackgroundService
                                 context.EventTypes,
                                 eDb => eDb.IdEventType,
                                 t => t.Id,
-                                (eDb, t) => new {IdEventType = t.Id, eDb.Guid}
+                                (eDb, t) => new { IdEventType = t.Id, eDb.Guid }
                             )
                             .Where(joined => joined.IdEventType.Equals(e.TypeEnum.Id))
                             .Any(joined => joined.Guid.Equals(e.Guid))

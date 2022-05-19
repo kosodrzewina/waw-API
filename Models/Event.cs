@@ -12,7 +12,8 @@ public class Event
     public int IdEventType { get; set; }
     public EventType Type { get; set; }
 
-    [NotMapped] public EventTypeEnum TypeEnum { get; set; }
+    [NotMapped]
+    public EventTypeEnum TypeEnum { get; set; }
 
     public override string ToString()
     {
