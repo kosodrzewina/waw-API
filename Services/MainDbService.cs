@@ -7,6 +7,7 @@ public interface IDatabaseService
 {
     public EventDto? GetEvent(string guid);
     public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
+    public void UpdateDb(List<Event> events);
 }
 
 public class MainDbService : IDatabaseService
@@ -63,5 +64,56 @@ public class MainDbService : IDatabaseService
                     }
             )
             .ToList();
+    }
+
+    public void UpdateDb(List<Event> events)
+    {
+        // add new events to db
+        _context.AddRange(
+            events
+                .Where(
+                    @event =>
+                        !_context.Events
+                            .Join(
+                                _context.EventTypes,
+                                eventDb => eventDb.IdEventType,
+                                type => type.Id,
+                                (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
+                            )
+                            .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
+                            .Any(joined => joined.Guid.Equals(@event.Guid))
+                )
+                .Select(
+                    @event =>
+                        new Event
+                        {
+                            Title = @event.Title,
+                            Description = @event.Description,
+                            Link = @event.Link,
+                            Guid = @event.Guid,
+                            IsCurrent = true,
+                            IdEventType = @event.TypeEnum.Id
+                        }
+                )
+        );
+
+        // mark appropriate events as outdated
+        _context.Events
+            .Where(
+                @event =>
+                    !events
+                        .Join(
+                            _context.EventTypes,
+                            eventDb => eventDb.IdEventType,
+                            type => type.Id,
+                            (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
+                        )
+                        .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
+                        .Any(joined => joined.Guid.Equals(@event.Guid))
+            )
+            .ToList()
+            .ForEach(@event => @event.IsCurrent = false);
+
+        _context.SaveChanges();
     }
 }

@@ -22,43 +22,54 @@ public class EventService : BackgroundService
             await eventFetcher.Fetch();
             Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} All events have been fetched");
 
-            SaveToDb(eventFetcher.LastFetched);
+            UpdateDb(eventFetcher.LastFetched);
 
             await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
     }
 
-    private void SaveToDb(List<Event> events)
+    private void UpdateDb(List<Event> events)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<MainDbContext>();
 
+        // add new events to db
         context.AddRange(
             events
                 .Where(
-                    e =>
+                    @event =>
                         !context.Events
                             .Join(
                                 context.EventTypes,
-                                eDb => eDb.IdEventType,
-                                t => t.Id,
-                                (eDb, t) => new { IdEventType = t.Id, eDb.Guid }
+                                eventDb => eventDb.IdEventType,
+                                type => type.Id,
+                                (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
                             )
-                            .Where(joined => joined.IdEventType.Equals(e.TypeEnum.Id))
-                            .Any(joined => joined.Guid.Equals(e.Guid))
+                            .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
+                            .Any(joined => joined.Guid.Equals(@event.Guid))
                 )
                 .Select(
-                    e =>
+                    @event =>
                         new Event
                         {
-                            Title = e.Title,
-                            Description = e.Description,
-                            Link = e.Link,
-                            Guid = e.Guid,
-                            IdEventType = e.TypeEnum.Id
+                            Title = @event.Title,
+                            Description = @event.Description,
+                            Link = @event.Link,
+                            Guid = @event.Guid,
+                            IsCurrent = true,
+                            IdEventType = @event.TypeEnum.Id
                         }
                 )
         );
+
+        // mark appropriate events as outdated
+        var guids = events.Select(@event => @event.Guid);
+
+        context.Events
+            .Where(eventDb => !guids.Contains(eventDb.Guid))
+            .ToList()
+            .ForEach(eventDb => eventDb.IsCurrent = false);
+
         context.SaveChanges();
     }
 }

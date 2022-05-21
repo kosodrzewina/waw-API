@@ -9,6 +9,7 @@ public class Event
     public string Description { get; set; }
     public string Link { get; set; }
     public string Guid { get; set; }
+    public bool IsCurrent { get; set; }
     public int IdEventType { get; set; }
     public EventType Type { get; set; }
 

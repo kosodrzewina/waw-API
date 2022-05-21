@@ -14,5 +14,6 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.Description).IsRequired().HasMaxLength(8000);
         builder.Property(e => e.Link).IsRequired().HasMaxLength(1000);
         builder.Property(e => e.Guid).IsRequired().HasMaxLength(1000);
+        builder.Property(e => e.IsCurrent).IsRequired();
     }
 }
