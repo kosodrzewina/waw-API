@@ -33,6 +33,7 @@ public class MainDbService : IDatabaseService
                         Title = e.Title,
                         Description = e.Description,
                         Link = e.Link,
+                        Address = e.Address,
                         Guid = e.Guid,
                         Type = t.Name
                     }
@@ -48,7 +49,16 @@ public class MainDbService : IDatabaseService
                 e => e.IdEventType,
                 t => t.Id,
                 (e, t) =>
-                    new { e.Title, e.Description, e.Link, e.Guid, TypeId = t.Id, TypeName = t.Name }
+                    new
+                    {
+                        e.Title,
+                        e.Description,
+                        e.Link,
+                        e.Address,
+                        e.Guid,
+                        TypeId = t.Id,
+                        TypeName = t.Name
+                    }
             )
             .ToList()
             .Where(e => eventTypes.Any(t => t.Id.Equals(e.TypeId)))
@@ -59,6 +69,7 @@ public class MainDbService : IDatabaseService
                         Title = joinResult.Title,
                         Description = joinResult.Description,
                         Link = joinResult.Link,
+                        Address = joinResult.Address,
                         Guid = joinResult.Guid,
                         Type = joinResult.TypeName
                     }
@@ -90,6 +101,7 @@ public class MainDbService : IDatabaseService
                             Title = @event.Title,
                             Description = @event.Description,
                             Link = @event.Link,
+                            Address = @event.Address,
                             Guid = @event.Guid,
                             IsCurrent = true,
                             IdEventType = @event.TypeEnum.Id

@@ -28,7 +28,7 @@ public class EventFetcher
 
         foreach (var eventType in _eventTypes)
         {
-            Debug.WriteLine($"Fetching event {eventType.Name}...");
+            Debug.WriteLine($"Fetching {eventType.Name} events...");
 
             var httpResponseMessage = await httpClient.GetAsync(eventType.Address);
 

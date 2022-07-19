@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
 using WawAPI.Models;
 
 namespace WawAPI.Services;
@@ -22,10 +23,29 @@ public class EventService : BackgroundService
             await eventFetcher.Fetch();
             Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} All events have been fetched");
 
-            UpdateDb(eventFetcher.LastFetched);
+            var newEvents = eventFetcher.LastFetched;
+
+            AddAddressesToEvents(newEvents);
+            UpdateDb(newEvents);
 
             await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
+    }
+
+    private void AddAddressesToEvents(List<Event> events) =>
+        events.ForEach(e => e.Address = GetAddressFromDescription(e.Description));
+
+    private string GetAddressFromDescription(string description)
+    {
+        var regex = new Regex("Miejsce: (.*)<");
+        var match = regex.Match(description);
+
+        if (match is null)
+        {
+            return "not found";
+        }
+
+        return match.Groups[1].ToString();
     }
 
     private void UpdateDb(List<Event> events)
@@ -55,6 +75,7 @@ public class EventService : BackgroundService
                             Title = @event.Title,
                             Description = @event.Description,
                             Link = @event.Link,
+                            Address = @event.Address,
                             Guid = @event.Guid,
                             IsCurrent = true,
                             IdEventType = @event.TypeEnum.Id
