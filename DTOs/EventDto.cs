@@ -2,10 +2,10 @@
 
 public class EventDto
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Link { get; set; }
-    public string Address { get; set; }
-    public string Guid { get; set; }
-    public List<string> Types { get; set; }
+    public string Title { get; set; } = default!;
+    public string Description { get; set; } = default!;
+    public string Link { get; set; } = default!;
+    public string Address { get; set; } = default!;
+    public string Guid { get; set; } = default!;
+    public List<string> Types { get; set; } = default!;
 }

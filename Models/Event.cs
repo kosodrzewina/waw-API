@@ -4,17 +4,17 @@ namespace WawAPI.Models;
 
 public class Event
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Link { get; set; }
-    public string Address { get; set; }
-    public string Guid { get; set; }
-    public bool IsCurrent { get; set; }
-    public ICollection<EventType> Types { get; set; }
+    public int Id { get; set; } = default!;
+    public string Title { get; set; } = default!;
+    public string Description { get; set; } = default!;
+    public string Link { get; set; } = default!;
+    public string Address { get; set; } = default!;
+    public string Guid { get; set; } = default!;
+    public bool IsCurrent { get; set; } = default!;
+    public ICollection<EventType> Types { get; set; } = default!;
 
     [NotMapped]
-    public List<EventTypeEnum> TypeEnums { get; set; }
+    public List<EventTypeEnum> TypeEnums { get; set; } = default!;
 
     public override string ToString()
     {
