@@ -33,46 +33,56 @@ public class EventFetcher
             var httpResponseMessage = await httpClient.GetAsync(eventType.Address);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
+            {
                 // TODO: do something
                 continue;
+            }
 
             var feed = XDocument.Load(eventType.Address);
 
-            events.AddRange(
-                feed.Descendants()
-                    .Where(item => item.Name == "item")
-                    .Select(
-                        item =>
-                        {
-                            var title = item.Element("title");
-                            var description = item.Element("description");
-                            var link = item.Element("link");
-                            var guid = item.Element("guid");
+            feed.Descendants()
+                .Where(item => item.Name == "item")
+                .ToList()
+                .ForEach(
+                    item =>
+                    {
+                        var title = item.Element("title");
+                        var description = item.Element("description");
+                        var link = item.Element("link");
+                        var guid = item.Element("guid");
 
-                            return new Event
-                            {
-                                // TODO: error messages should not be the params values
-                                Title =
-                                    title != null && title.Value != null
-                                        ? title.Value
-                                        : "An error occurred when fetching title",
-                                Description =
-                                    description != null && description.Value != null
-                                        ? description.Value
-                                        : "An error occurred when fetching description",
-                                Link =
-                                    link != null && link.Value != null
-                                        ? link.Value
-                                        : "An error occurred when fetching link",
-                                Guid =
-                                    guid != null && guid.Value != null
-                                        ? guid.Value
-                                        : "An error occurred when fetching guid",
-                                TypeEnum = eventType
-                            };
+                        if (!events.Any(e => e.Guid == guid?.Value))
+                        {
+                            events.Add(
+                                new Event
+                                {
+                                    // TODO: error messages should not be the params values
+                                    Title =
+                                        title != null && title.Value != null
+                                            ? title.Value
+                                            : "An error occurred when fetching title",
+                                    Description =
+                                        description != null && description.Value != null
+                                            ? description.Value
+                                            : "An error occurred when fetching description",
+                                    Link =
+                                        link != null && link.Value != null
+                                            ? link.Value
+                                            : "An error occurred when fetching link",
+                                    Guid =
+                                        guid != null && guid.Value != null
+                                            ? guid.Value
+                                            : "An error occurred when fetching guid",
+                                    TypeEnums = new()
+                                }
+                            );
                         }
-                    )
-            );
+                        else
+                        {
+                            events.First(e => e.Guid == guid?.Value).TypeEnums.Add(eventType);
+                        }
+                    }
+                );
         }
 
         LastFetched = events;

@@ -12,7 +12,7 @@ public class EventTypeTypeConfiguration : IEntityTypeConfiguration<EventType>
         builder.Property(e => e.Id).ValueGeneratedOnAdd();
         builder.Property(e => e.Name).IsRequired().HasMaxLength(128);
 
-        builder.HasMany(et => et.Events).WithOne(e => e.Type).HasForeignKey(e => e.IdEventType);
+        builder.HasMany(et => et.Events).WithMany(e => e.Types);
 
         builder.HasData(
             Enumeration

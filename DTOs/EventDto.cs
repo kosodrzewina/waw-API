@@ -7,5 +7,5 @@ public class EventDto
     public string Link { get; set; }
     public string Address { get; set; }
     public string Guid { get; set; }
-    public string Type { get; set; }
+    public List<string> Types { get; set; }
 }

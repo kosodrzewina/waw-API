@@ -1,4 +1,5 @@
-﻿using WawAPI.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using WawAPI.DTOs;
 using WawAPI.Models;
 
 namespace WawAPI.Services;
@@ -22,12 +23,9 @@ public class MainDbService : IDatabaseService
     public EventDto? GetEvent(string guid)
     {
         return _context.Events
-            .Where(e => e.Guid.Equals(guid))
-            .Join(
-                _context.EventTypes,
-                e => e.IdEventType,
-                t => t.Id,
-                (e, t) =>
+            .Where(e => e.Guid == guid)
+            .Select(
+                e =>
                     new EventDto
                     {
                         Title = e.Title,
@@ -35,7 +33,7 @@ public class MainDbService : IDatabaseService
                         Link = e.Link,
                         Address = e.Address,
                         Guid = e.Guid,
-                        Type = t.Name
+                        Types = e.Types.Select(t => t.Name).ToList()
                     }
             )
             .FirstOrDefault();
@@ -43,88 +41,51 @@ public class MainDbService : IDatabaseService
 
     public List<EventDto> GetEvents(params EventTypeEnum[] eventTypes)
     {
+        var types = _context.EventTypes.ToList()
+            .Where(t1 => eventTypes.Any(t2 => t2.Id == t1.Id)).ToList();
+
         return _context.Events
-            .Join(
-                _context.EventTypes,
-                e => e.IdEventType,
-                t => t.Id,
-                (e, t) =>
-                    new
-                    {
-                        e.Title,
-                        e.Description,
-                        e.Link,
-                        e.Address,
-                        e.Guid,
-                        TypeId = t.Id,
-                        TypeName = t.Name
-                    }
-            )
+            .Include(e => e.Types)
             .ToList()
-            .Where(e => eventTypes.Any(t => t.Id.Equals(e.TypeId)))
-            .Select(
-                joinResult =>
-                    new EventDto
-                    {
-                        Title = joinResult.Title,
-                        Description = joinResult.Description,
-                        Link = joinResult.Link,
-                        Address = joinResult.Address,
-                        Guid = joinResult.Guid,
-                        Type = joinResult.TypeName
-                    }
-            )
-            .ToList();
+            .Where(e => e.Types.Intersect(types).Any())
+            .Select(e => new EventDto
+            {
+                Title = e.Title,
+                Description = e.Description,
+                Link = e.Link,
+                Address = e.Address,
+                Guid = e.Guid,
+                Types = e.Types.Select(t => t.Name).ToList()
+            }
+            ).ToList();
     }
 
     public void UpdateDb(List<Event> events)
     {
-        // add new events to db
-        _context.AddRange(
-            events
-                .Where(
-                    @event =>
-                        !_context.Events
-                            .Join(
-                                _context.EventTypes,
-                                eventDb => eventDb.IdEventType,
-                                type => type.Id,
-                                (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
-                            )
-                            .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
-                            .Any(joined => joined.Guid.Equals(@event.Guid))
-                )
-                .Select(
-                    @event =>
-                        new Event
-                        {
-                            Title = @event.Title,
-                            Description = @event.Description,
-                            Link = @event.Link,
-                            Address = @event.Address,
-                            Guid = @event.Guid,
-                            IsCurrent = true,
-                            IdEventType = @event.TypeEnum.Id
-                        }
-                )
-        );
+        foreach (var @event in events)
+        {
+            // all of the events from @event categories
+            var eventsDb = _context.Events
+                .Where(e =>
+                    e.Types
+                    .Select(t => t.Name)
+                    .Intersect(@event.Types.Select(t => t.Name)).Any()
+                ).ToList();
+
+            if (!eventsDb.Any(e => e.Guid == @event.Guid))
+            {
+                _context.Add(@event);
+            }
+        }
 
         // mark appropriate events as outdated
-        _context.Events
-            .Where(
-                @event =>
-                    !events
-                        .Join(
-                            _context.EventTypes,
-                            eventDb => eventDb.IdEventType,
-                            type => type.Id,
-                            (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
-                        )
-                        .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
-                        .Any(joined => joined.Guid.Equals(@event.Guid))
-            )
-            .ToList()
-            .ForEach(@event => @event.IsCurrent = false);
+        _context.Events.Where(eDb => eDb.IsCurrent).ToList().ForEach(eDb =>
+        {
+            if (!events.Any(e => e.Guid == eDb.Guid))
+            {
+                eDb.IsCurrent = false;
+            }
+        });
 
         _context.SaveChanges();
     }

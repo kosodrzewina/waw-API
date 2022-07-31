@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using WawAPI.Models;
 
@@ -53,43 +54,30 @@ public class EventService : BackgroundService
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<MainDbContext>();
 
-        // add new events to db
-        context.AddRange(
-            events
-                .Where(
-                    @event =>
-                        !context.Events
-                            .Join(
-                                context.EventTypes,
-                                eventDb => eventDb.IdEventType,
-                                type => type.Id,
-                                (eventDb, type) => new { IdEventType = type.Id, eventDb.Guid }
-                            )
-                            .Where(joined => joined.IdEventType.Equals(@event.TypeEnum.Id))
-                            .Any(joined => joined.Guid.Equals(@event.Guid))
-                )
-                .Select(
-                    @event =>
-                        new Event
-                        {
-                            Title = @event.Title,
-                            Description = @event.Description,
-                            Link = @event.Link,
-                            Address = @event.Address,
-                            Guid = @event.Guid,
-                            IsCurrent = true,
-                            IdEventType = @event.TypeEnum.Id
-                        }
-                )
-        );
+        foreach (var @event in events)
+        {
+            var typeIds = @event.TypeEnums.Select(t => t.Id);
+            var types = context.EventTypes.Where(t => typeIds.Contains(t.Id)).ToList();
+            var eventsDb = context.Events
+                .Include(e => e.Types).ToList()
+                .Where(e => e.Types.Intersect(types).Any()).ToList();
+
+            if (!eventsDb.Any(e => e.Guid == @event.Guid))
+            {
+                @event.IsCurrent = true;
+                @event.Types = types;
+                context.Add(@event);
+            }
+        }
 
         // mark appropriate events as outdated
-        var guids = events.Select(@event => @event.Guid);
-
-        context.Events
-            .Where(eventDb => !guids.Contains(eventDb.Guid))
-            .ToList()
-            .ForEach(eventDb => eventDb.IsCurrent = false);
+        context.Events.Where(eDb => eDb.IsCurrent).ToList().ForEach(eDb =>
+        {
+            if (!events.Any(e => e.Guid == eDb.Guid))
+            {
+                eDb.IsCurrent = false;
+            }
+        });
 
         context.SaveChanges();
     }

@@ -21,277 +21,286 @@ namespace WawAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WawAPI.Models.Event", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            modelBuilder.Entity("EventEventType", b =>
+            {
+                b.Property<int>("EventsId")
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                b.Property<int>("TypesId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                b.HasKey("EventsId", "TypesId");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(8000)
-                        .HasColumnType("nvarchar(max)");
+                b.HasIndex("TypesId");
 
-                    b.Property<string>("Guid")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("IdEventType")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsCurrent")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdEventType");
-
-                    b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("WawAPI.Models.EventType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EventTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Today"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Latest"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "ForKids"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Movies"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Parties"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Concerts"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Presentations"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Walks"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Sport"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Meetings"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Standups"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Fairs"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "TheatrePlays"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "Workshops"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "Lectures"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Expositions"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Other"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "English"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Online"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "Bemowo"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Name = "Bialoleka"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            Name = "Bielany"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            Name = "Mokotow"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Name = "Ochota"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Name = "PragaPoludnie"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            Name = "PragaPolnoc"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            Name = "Srodmiescie"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            Name = "Rembertow"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            Name = "Targowek"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            Name = "Ursus"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            Name = "Ursynow"
-                        },
-                        new
-                        {
-                            Id = 32,
-                            Name = "Wawer"
-                        },
-                        new
-                        {
-                            Id = 33,
-                            Name = "Wesola"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            Name = "Wilanow"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            Name = "Wlochy"
-                        },
-                        new
-                        {
-                            Id = 36,
-                            Name = "Wola"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            Name = "Zoliborz"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            Name = "OutsideTheCity"
-                        });
-                });
+                b.ToTable("EventEventType");
+            });
 
             modelBuilder.Entity("WawAPI.Models.Event", b =>
-                {
-                    b.HasOne("WawAPI.Models.EventType", "Type")
-                        .WithMany("Events")
-                        .HasForeignKey("IdEventType")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    b.Navigation("Type");
-                });
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                b.Property<string>("Address")
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasColumnType("nvarchar(1000)");
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(8000)
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Guid")
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasColumnType("nvarchar(1000)");
+
+                b.Property<bool>("IsCurrent")
+                    .HasColumnType("bit");
+
+                b.Property<string>("Link")
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasColumnType("nvarchar(1000)");
+
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .HasColumnType("nvarchar(250)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Events");
+            });
 
             modelBuilder.Entity("WawAPI.Models.EventType", b =>
-                {
-                    b.Navigation("Events");
-                });
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(128)
+                    .HasColumnType("nvarchar(128)");
+
+                b.HasKey("Id");
+
+                b.ToTable("EventTypes");
+
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Name = "Today"
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Name = "Latest"
+                    },
+                    new
+                    {
+                        Id = 3,
+                        Name = "ForKids"
+                    },
+                    new
+                    {
+                        Id = 4,
+                        Name = "Movies"
+                    },
+                    new
+                    {
+                        Id = 5,
+                        Name = "Parties"
+                    },
+                    new
+                    {
+                        Id = 6,
+                        Name = "Concerts"
+                    },
+                    new
+                    {
+                        Id = 7,
+                        Name = "Presentations"
+                    },
+                    new
+                    {
+                        Id = 8,
+                        Name = "Walks"
+                    },
+                    new
+                    {
+                        Id = 9,
+                        Name = "Sport"
+                    },
+                    new
+                    {
+                        Id = 10,
+                        Name = "Meetings"
+                    },
+                    new
+                    {
+                        Id = 11,
+                        Name = "Standups"
+                    },
+                    new
+                    {
+                        Id = 12,
+                        Name = "Fairs"
+                    },
+                    new
+                    {
+                        Id = 13,
+                        Name = "TheatrePlays"
+                    },
+                    new
+                    {
+                        Id = 14,
+                        Name = "Workshops"
+                    },
+                    new
+                    {
+                        Id = 15,
+                        Name = "Lectures"
+                    },
+                    new
+                    {
+                        Id = 16,
+                        Name = "Expositions"
+                    },
+                    new
+                    {
+                        Id = 17,
+                        Name = "Other"
+                    },
+                    new
+                    {
+                        Id = 18,
+                        Name = "English"
+                    },
+                    new
+                    {
+                        Id = 19,
+                        Name = "Online"
+                    },
+                    new
+                    {
+                        Id = 20,
+                        Name = "Bemowo"
+                    },
+                    new
+                    {
+                        Id = 21,
+                        Name = "Bialoleka"
+                    },
+                    new
+                    {
+                        Id = 22,
+                        Name = "Bielany"
+                    },
+                    new
+                    {
+                        Id = 23,
+                        Name = "Mokotow"
+                    },
+                    new
+                    {
+                        Id = 24,
+                        Name = "Ochota"
+                    },
+                    new
+                    {
+                        Id = 25,
+                        Name = "PragaPoludnie"
+                    },
+                    new
+                    {
+                        Id = 26,
+                        Name = "PragaPolnoc"
+                    },
+                    new
+                    {
+                        Id = 27,
+                        Name = "Srodmiescie"
+                    },
+                    new
+                    {
+                        Id = 28,
+                        Name = "Rembertow"
+                    },
+                    new
+                    {
+                        Id = 29,
+                        Name = "Targowek"
+                    },
+                    new
+                    {
+                        Id = 30,
+                        Name = "Ursus"
+                    },
+                    new
+                    {
+                        Id = 31,
+                        Name = "Ursynow"
+                    },
+                    new
+                    {
+                        Id = 32,
+                        Name = "Wawer"
+                    },
+                    new
+                    {
+                        Id = 33,
+                        Name = "Wesola"
+                    },
+                    new
+                    {
+                        Id = 34,
+                        Name = "Wilanow"
+                    },
+                    new
+                    {
+                        Id = 35,
+                        Name = "Wlochy"
+                    },
+                    new
+                    {
+                        Id = 36,
+                        Name = "Wola"
+                    },
+                    new
+                    {
+                        Id = 37,
+                        Name = "Zoliborz"
+                    },
+                    new
+                    {
+                        Id = 38,
+                        Name = "OutsideTheCity"
+                    });
+            });
+
+            modelBuilder.Entity("EventEventType", b =>
+            {
+                b.HasOne("WawAPI.Models.Event", null)
+                    .WithMany()
+                    .HasForeignKey("EventsId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("WawAPI.Models.EventType", null)
+                    .WithMany()
+                    .HasForeignKey("TypesId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
         }
     }
