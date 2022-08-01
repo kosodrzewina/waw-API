@@ -73,7 +73,7 @@ public class EventFetcher
                                         guid != null && guid.Value != null
                                             ? guid.Value
                                             : "An error occurred when fetching guid",
-                                    TypeEnums = new()
+                                    TypeEnums = new List<EventTypeEnum> { eventType }
                                 }
                             );
                         }
