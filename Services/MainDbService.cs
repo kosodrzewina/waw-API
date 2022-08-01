@@ -8,7 +8,6 @@ public interface IDatabaseService
 {
     public EventDto? GetEvent(string guid);
     public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
-    public void UpdateDb(List<Event> events);
 }
 
 public class MainDbService : IDatabaseService
@@ -58,35 +57,5 @@ public class MainDbService : IDatabaseService
                 Types = e.Types.Select(t => t.Name).ToList()
             }
             ).ToList();
-    }
-
-    public void UpdateDb(List<Event> events)
-    {
-        foreach (var @event in events)
-        {
-            // all of the events from @event categories
-            var eventsDb = _context.Events
-                .Where(e =>
-                    e.Types
-                    .Select(t => t.Name)
-                    .Intersect(@event.Types.Select(t => t.Name)).Any()
-                ).ToList();
-
-            if (!eventsDb.Any(e => e.Guid == @event.Guid))
-            {
-                _context.Add(@event);
-            }
-        }
-
-        // mark appropriate events as outdated
-        _context.Events.Where(eDb => eDb.IsCurrent).ToList().ForEach(eDb =>
-        {
-            if (!events.Any(e => e.Guid == eDb.Guid))
-            {
-                eDb.IsCurrent = false;
-            }
-        });
-
-        _context.SaveChanges();
     }
 }
