@@ -18,5 +18,9 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.IsCurrent).IsRequired();
 
         builder.HasMany(e => e.Types).WithMany(t => t.Events);
+        builder
+            .HasOne(e => e.Location)
+            .WithOne(l => l.Event)
+            .HasForeignKey<Location>(l => l.IdEvent);
     }
 }

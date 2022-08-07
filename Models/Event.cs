@@ -9,6 +9,7 @@ public class Event
     public string Description { get; set; } = default!;
     public string Link { get; set; } = default!;
     public string Address { get; set; } = default!;
+    public Location? Location { get; set; } = default!;
     public string Guid { get; set; } = default!;
     public bool IsCurrent { get; set; } = default!;
     public ICollection<EventType> Types { get; set; } = default!;

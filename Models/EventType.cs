@@ -2,7 +2,7 @@
 
 public class EventType
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public ICollection<Event> Events { get; set; }
+    public int Id { get; set; } = default!;
+    public string Name { get; set; } = default!;
+    public ICollection<Event> Events { get; set; } = default!;
 }

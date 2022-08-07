@@ -22,10 +22,13 @@ public class MainDbService : IDatabaseService
     public EventDto? GetEvent(string guid)
     {
         return _context.Events
+            .Include(e => e.Location)
+            .ToList()
             .Where(e => e.Guid == guid)
             .Select(
                 e =>
-                    new EventDto
+                {
+                    var eventDto = new EventDto
                     {
                         Title = e.Title,
                         Description = e.Description,
@@ -33,7 +36,19 @@ public class MainDbService : IDatabaseService
                         Address = e.Address,
                         Guid = e.Guid,
                         Types = e.Types.Select(t => t.Name).ToList()
+                    };
+
+                    if (e.Location is not null)
+                    {
+                        eventDto.Location = new LocationDto
+                        {
+                            Latitude = e.Location.Latitude,
+                            Longitude = e.Location.Longitude
+                        };
                     }
+
+                    return eventDto;
+                }
             )
             .FirstOrDefault();
     }
@@ -45,16 +60,31 @@ public class MainDbService : IDatabaseService
 
         return _context.Events
             .Include(e => e.Types)
+            .Include(e => e.Location)
             .ToList()
             .Where(e => e.Types.Intersect(types).Any())
-            .Select(e => new EventDto
+            .Select(e =>
             {
-                Title = e.Title,
-                Description = e.Description,
-                Link = e.Link,
-                Address = e.Address,
-                Guid = e.Guid,
-                Types = e.Types.Select(t => t.Name).ToList()
+                var eventDto = new EventDto
+                {
+                    Title = e.Title,
+                    Description = e.Description,
+                    Link = e.Link,
+                    Address = e.Address,
+                    Guid = e.Guid,
+                    Types = e.Types.Select(t => t.Name).ToList()
+                };
+
+                if (e.Location is not null)
+                {
+                    eventDto.Location = new LocationDto
+                    {
+                        Latitude = e.Location.Latitude,
+                        Longitude = e.Location.Longitude
+                    };
+                }
+
+                return eventDto;
             }
             ).ToList();
     }
