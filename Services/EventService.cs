@@ -9,11 +9,16 @@ namespace WawAPI.Services;
 
 public class EventService : BackgroundService
 {
+    private readonly ILogger<EventService> _logger;
     private readonly IConfiguration _configuration;
     private readonly MainDbContext _context;
     private readonly GoogleGeocoder _geocoder;
 
-    public EventService(IServiceScopeFactory serviceScopeFactory, IConfiguration configuration)
+    public EventService(
+        IServiceScopeFactory serviceScopeFactory,
+        IConfiguration configuration,
+        ILogger<EventService> logger
+    )
     {
         var scope = serviceScopeFactory.CreateScope();
 
@@ -23,6 +28,7 @@ public class EventService : BackgroundService
         {
             ApiKey = _configuration.GetValue<string>("ApiKeys:GoogleApiKey")
         };
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,9 +37,9 @@ public class EventService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} Fetching all events...");
+            _logger.LogInformation($"{DateTime.Now} Fetching all events...");
             await eventFetcher.Fetch();
-            Debug.WriteLine(LogLevel.Information, $"{DateTime.Now} All events have been fetched");
+            _logger.LogInformation($"{DateTime.Now} All events have been fetched");
 
             var fetchedEvents = eventFetcher.LastFetched;
             var newEvents = await SelectAndPrepareNewEvents(fetchedEvents);
@@ -89,7 +95,7 @@ public class EventService : BackgroundService
     {
         foreach (var @event in events)
         {
-            Debug.WriteLine($"Getting location for {@event.Address}...");
+            _logger.LogInformation($"Getting location for {@event.Address}...");
 
             var addresses = await _geocoder.GeocodeAsync(@event.Address);
             var address = addresses.FirstOrDefault();
