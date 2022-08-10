@@ -1,6 +1,5 @@
 ﻿using Geocoding.Google;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using WawAPI.Models;
 using Location = WawAPI.Models.Location;
@@ -49,22 +48,6 @@ public class EventService : BackgroundService
         }
     }
 
-    private void AddAddressesToEvents(List<Event> events) =>
-        events.ForEach(e => e.Address = GetAddressFromDescription(e.Description));
-
-    private string GetAddressFromDescription(string description)
-    {
-        var regex = new Regex("Miejsce: (.*)<");
-        var match = regex.Match(description);
-
-        if (match is null)
-        {
-            return "not found";
-        }
-
-        return match.Groups[1].ToString();
-    }
-
     private async Task<List<Event>> SelectAndPrepareNewEvents(List<Event> events)
     {
         var newEvents = new List<Event>();
@@ -85,10 +68,42 @@ public class EventService : BackgroundService
             }
         }
 
+        AddImagesToEvents(newEvents);
         AddAddressesToEvents(newEvents);
         await AddLocationsToEvents(newEvents);
 
         return newEvents;
+    }
+
+    private void AddImagesToEvents(List<Event> events)
+    {
+        foreach (var @event in events)
+        {
+            _logger.LogInformation($"Getting image for {@event.Title}");
+
+            var regex = new Regex("<img src=\"([^\"]*)\"");
+            var match = regex.Match(@event.Description);
+
+            @event.Image = match is not null ?
+                match.Groups[1].ToString() :
+                "not found";
+        }
+    }
+
+    private void AddAddressesToEvents(List<Event> events) =>
+        events.ForEach(e => e.Address = GetAddressFromDescription(e.Description));
+
+    private string GetAddressFromDescription(string description)
+    {
+        var regex = new Regex("Miejsce: (.*)<");
+        var match = regex.Match(description);
+
+        if (match is null)
+        {
+            return "not found";
+        }
+
+        return match.Groups[1].ToString();
     }
 
     private async Task AddLocationsToEvents(List<Event> events)

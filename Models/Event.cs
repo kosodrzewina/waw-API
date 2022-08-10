@@ -7,6 +7,7 @@ public class Event
     public int Id { get; set; } = default!;
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
+    public string Image { get; set; } = default!;
     public string Link { get; set; } = default!;
     public string Address { get; set; } = default!;
     public Location? Location { get; set; } = default!;

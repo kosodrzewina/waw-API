@@ -34,6 +34,7 @@ public class MainDbService : IDatabaseService
                         Description = e.Description,
                         Link = e.Link,
                         Address = e.Address,
+                        Image = e.Image,
                         Guid = e.Guid,
                         Types = e.Types.Select(t => t.Name).ToList()
                     };
@@ -71,6 +72,7 @@ public class MainDbService : IDatabaseService
                     Description = e.Description,
                     Link = e.Link,
                     Address = e.Address,
+                    Image = e.Image,
                     Guid = e.Guid,
                     Types = e.Types.Select(t => t.Name).ToList()
                 };
