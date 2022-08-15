@@ -37,18 +37,18 @@ public class EventService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation($"{DateTime.Now} Fetching all events...");
-            await eventFetcher.Fetch();
+            await eventFetcher.FetchAsync();
             _logger.LogInformation($"{DateTime.Now} All events have been fetched");
 
             var fetchedEvents = eventFetcher.LastFetched;
-            var newEvents = await SelectAndPrepareNewEvents(fetchedEvents);
+            var newEvents = await SelectAndPrepareNewEventsAsync(fetchedEvents);
 
             UpdateDb(fetchedEvents, newEvents);
             await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
     }
 
-    private async Task<List<Event>> SelectAndPrepareNewEvents(List<Event> events)
+    private async Task<List<Event>> SelectAndPrepareNewEventsAsync(List<Event> events)
     {
         var newEvents = new List<Event>();
 
@@ -70,7 +70,7 @@ public class EventService : BackgroundService
 
         AddImagesToEvents(newEvents);
         AddAddressesToEvents(newEvents);
-        await AddLocationsToEvents(newEvents);
+        await AddLocationsToEventsAsync(newEvents);
 
         return newEvents;
     }
@@ -106,7 +106,7 @@ public class EventService : BackgroundService
         return match.Groups[1].ToString();
     }
 
-    private async Task AddLocationsToEvents(List<Event> events)
+    private async Task AddLocationsToEventsAsync(List<Event> events)
     {
         foreach (var @event in events)
         {

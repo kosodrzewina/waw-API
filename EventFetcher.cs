@@ -21,7 +21,7 @@ public class EventFetcher
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 
-    public async Task Fetch()
+    public async Task FetchAsync()
     {
         var events = new List<Event>();
         using var httpClient = new HttpClient();
