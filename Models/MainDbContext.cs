@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WawAPI.Configurations;
 
 namespace WawAPI.Models;
 
-public class MainDbContext : DbContext
+public class MainDbContext : IdentityDbContext
 {
     public MainDbContext() { }
 
@@ -12,6 +13,7 @@ public class MainDbContext : DbContext
     public DbSet<Event> Events { get; set; } = default!;
     public DbSet<EventType> EventTypes { get; set; } = default!;
     public DbSet<Location> Locations { get; set; } = default!;
+    public DbSet<User> EndUsers { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
