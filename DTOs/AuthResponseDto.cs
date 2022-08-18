@@ -5,4 +5,5 @@ public class AuthResponseDto
     public string Message { get; set; } = default!;
     public bool IsSuccess { get; set; } = default!;
     public IEnumerable<string> Errors { get; set; } = default!;
+    public DateTime? ExpireDate { get; set; } = default!;
 }

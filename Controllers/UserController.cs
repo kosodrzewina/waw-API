@@ -28,4 +28,17 @@ public class UserController : ControllerBase
 
 		return BadRequest(result);
 	}
+
+	[HttpPost("log-in")]
+	public async Task<IActionResult> LogInAsync([FromBody] LogInDto logInDto)
+	{
+		var result = await _userService.LogInAsync(logInDto);
+
+		if (result.IsSuccess)
+		{
+			return Ok(result);
+		}
+
+		return BadRequest(result);
+	}
 }
