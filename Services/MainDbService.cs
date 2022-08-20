@@ -63,31 +63,31 @@ public class MainDbService : IDatabaseService
             .Include(e => e.Types)
             .Include(e => e.Location)
             .ToList()
-            .Where(e => e.Types.Intersect(types).Any())
+            .Where(e => e.Types.Intersect(types).Any() && e.IsCurrent)
             .Select(e =>
-            {
-                var eventDto = new EventDto
                 {
-                    Title = e.Title,
-                    Description = e.Description,
-                    Link = e.Link,
-                    Address = e.Address,
-                    Image = e.Image,
-                    Guid = e.Guid,
-                    Types = e.Types.Select(t => t.Name).ToList()
-                };
-
-                if (e.Location is not null)
-                {
-                    eventDto.Location = new LocationDto
+                    var eventDto = new EventDto
                     {
-                        Latitude = e.Location.Latitude,
-                        Longitude = e.Location.Longitude
+                        Title = e.Title,
+                        Description = e.Description,
+                        Link = e.Link,
+                        Address = e.Address,
+                        Image = e.Image,
+                        Guid = e.Guid,
+                        Types = e.Types.Select(t => t.Name).ToList()
                     };
-                }
 
-                return eventDto;
-            }
+                    if (e.Location is not null)
+                    {
+                        eventDto.Location = new LocationDto
+                        {
+                            Latitude = e.Location.Latitude,
+                            Longitude = e.Location.Longitude
+                        };
+                    }
+
+                    return eventDto;
+                }
             ).ToList();
     }
 }
