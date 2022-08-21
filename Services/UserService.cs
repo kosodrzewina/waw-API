@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WawAPI.DTOs;
+using WawAPI.Models;
 
 namespace WawAPI.Services;
 
@@ -15,10 +16,10 @@ public interface IUserService
 
 public class UserService : IUserService
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
 
-    public UserService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+    public UserService(UserManager<User> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
         _configuration = configuration;
@@ -35,7 +36,7 @@ public class UserService : IUserService
             };
         }
 
-        var user = new IdentityUser 
+        var user = new User
         { 
             Email = registerDto.Email,
             UserName = registerDto.Email

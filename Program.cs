@@ -17,7 +17,7 @@ builder.Services.AddDbContext<MainDbContext>(
     }
 );
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+builder.Services.AddIdentity<User, IdentityRole>(
     options =>
     {
         options.Password.RequireDigit = true;
