@@ -1,7 +1,8 @@
-﻿namespace WawAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace WawAPI.Models;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; } = default!;
-    public string Email { get; set; } = default!;
+    public ICollection<Event> Events { get; set; } = default!;
 }

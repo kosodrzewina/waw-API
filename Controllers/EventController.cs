@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WawAPI.Services;
 
 namespace WawAPI.Controllers;
@@ -51,5 +53,42 @@ public class EventController : ControllerBase
         }
 
         return Ok(_databaseService.GetEvents(types!));
+    }
+
+    [HttpPatch("like")]
+    [Authorize]
+    public IActionResult LikeEvent(string encodedGuid)
+    {
+        var guid = System.Text.Encoding.UTF8.GetString(
+            Convert.FromBase64String(encodedGuid)
+        );
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId is not null)
+        {
+            _databaseService.LikeEvent(guid, userId);
+            return Ok();
+        }
+
+        return BadRequest();
+    }
+
+    [HttpGet("favourites")]
+    [Authorize]
+    public IActionResult GetFavouriteEvents()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId is not null)
+        {
+            var events = _databaseService.GetFavouriteEvents(userId);
+
+            if (events is not null)
+            {
+                return Ok(events);
+            }
+        }
+
+        return BadRequest();
     }
 }

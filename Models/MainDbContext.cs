@@ -4,7 +4,7 @@ using WawAPI.Configurations;
 
 namespace WawAPI.Models;
 
-public class MainDbContext : IdentityDbContext
+public class MainDbContext : IdentityDbContext<User>
 {
     public MainDbContext() { }
 
@@ -13,7 +13,6 @@ public class MainDbContext : IdentityDbContext
     public DbSet<Event> Events { get; set; } = default!;
     public DbSet<EventType> EventTypes { get; set; } = default!;
     public DbSet<Location> Locations { get; set; } = default!;
-    public DbSet<User> EndUsers { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +20,6 @@ public class MainDbContext : IdentityDbContext
         modelBuilder.ApplyConfiguration(new EventTypeConfiguration());
         modelBuilder.ApplyConfiguration(new EventTypeTypeConfiguration());
         modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new UserTypeConfiguration());
     }
 }

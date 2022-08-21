@@ -14,6 +14,7 @@ public class Event
     public string Guid { get; set; } = default!;
     public bool IsCurrent { get; set; } = default!;
     public ICollection<EventType> Types { get; set; } = default!;
+    public ICollection<User> Users { get; set; } = default!;
 
     [NotMapped]
     public List<EventTypeEnum> TypeEnums { get; set; } = default!;

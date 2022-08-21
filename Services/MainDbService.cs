@@ -8,6 +8,8 @@ public interface IDatabaseService
 {
     public EventDto? GetEvent(string guid);
     public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
+    public void LikeEvent(string guid, string email);
+    public List<EventDto>? GetFavouriteEvents(string userId);
 }
 
 public class MainDbService : IDatabaseService
@@ -89,5 +91,62 @@ public class MainDbService : IDatabaseService
                     return eventDto;
                 }
             ).ToList();
+    }
+
+    public void LikeEvent(string guid, string userId)
+    {
+        var @event = _context.Events.Where(e => e.Guid == guid).FirstOrDefault();
+        var user = _context.Users
+            .Where(u => u.Id == userId)
+            .Include(e => e.Events)
+            .FirstOrDefault();
+
+        if (user is not null && @event is not null)
+        {
+            user.Events.Add(@event);
+            _context.SaveChanges();
+        }
+    }
+
+    public List<EventDto>? GetFavouriteEvents(string userId)
+    {
+        var user = _context.Users
+            .Where(u => u.Id == userId)
+            .Include(u => u.Events)
+            .ThenInclude(e => e.Types)
+            .Include(u => u.Events)
+            .ThenInclude(e => e.Location)
+            .FirstOrDefault();
+
+        if (user is not null)
+        {
+            return user.Events.ToList().Select(e =>
+                {
+                    var eventDto = new EventDto
+                    {
+                        Title = e.Title,
+                        Description = e.Description,
+                        Link = e.Link,
+                        Address = e.Address,
+                        Image = e.Image,
+                        Guid = e.Guid,
+                        Types = e.Types.Select(t => t.Name).ToList()
+                    };
+
+                    if (e.Location is not null)
+                    {
+                        eventDto.Location = new LocationDto
+                        {
+                            Latitude = e.Location.Latitude,
+                            Longitude = e.Location.Longitude
+                        };
+                    }
+
+                    return eventDto;
+                }
+            ).ToList();
+        }
+
+        return null;
     }
 }
