@@ -8,7 +8,7 @@ public interface IDatabaseService
 {
     public EventDto? GetEvent(string guid);
     public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
-    public void LikeEvent(string guid, string email);
+    public void LikeEvent(string guid, string email, bool liked);
     public List<EventDto>? GetFavouriteEvents(string userId);
 }
 
@@ -93,7 +93,7 @@ public class MainDbService : IDatabaseService
             ).ToList();
     }
 
-    public void LikeEvent(string guid, string userId)
+    public void LikeEvent(string guid, string userId, bool liked)
     {
         var @event = _context.Events.Where(e => e.Guid == guid).FirstOrDefault();
         var user = _context.Users
@@ -103,7 +103,15 @@ public class MainDbService : IDatabaseService
 
         if (user is not null && @event is not null)
         {
-            user.Events.Add(@event);
+            if (liked)
+            {
+                user.Events.Add(@event);
+            }
+            else
+            {
+                user.Events.Remove(@event);
+            }
+
             _context.SaveChanges();
         }
     }

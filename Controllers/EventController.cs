@@ -55,9 +55,9 @@ public class EventController : ControllerBase
         return Ok(_databaseService.GetEvents(types!));
     }
 
-    [HttpPatch("like")]
+    [HttpPut("like")]
     [Authorize]
-    public IActionResult LikeEvent(string encodedGuid)
+    public IActionResult LikeEvent(string encodedGuid, bool liked)
     {
         var guid = System.Text.Encoding.UTF8.GetString(
             Convert.FromBase64String(encodedGuid)
@@ -66,7 +66,7 @@ public class EventController : ControllerBase
 
         if (userId is not null)
         {
-            _databaseService.LikeEvent(guid, userId);
+            _databaseService.LikeEvent(guid, userId, liked);
             return Ok();
         }
 
