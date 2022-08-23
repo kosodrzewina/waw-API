@@ -55,6 +55,17 @@ public class EventController : ControllerBase
         return Ok(_databaseService.GetEvents(types!));
     }
 
+    [HttpGet("like-count")]
+    public IActionResult GetEventLikeCount(string encodedGuid)
+    {
+        var guid = System.Text.Encoding.UTF8.GetString(
+            Convert.FromBase64String(encodedGuid)
+        );
+        var likeCount = _databaseService.GetEventLikeCount(guid);
+
+        return Ok(likeCount);
+    }
+
     [HttpPut("like")]
     [Authorize]
     public IActionResult LikeEvent(string encodedGuid, bool liked)

@@ -10,6 +10,7 @@ public interface IDatabaseService
     public List<EventDto>? GetEvents(params EventTypeEnum[] eventTypes);
     public void LikeEvent(string guid, string email, bool liked);
     public List<EventDto>? GetFavouriteEvents(string userId);
+    public int GetEventLikeCount(string guid);
 }
 
 public class MainDbService : IDatabaseService
@@ -156,5 +157,22 @@ public class MainDbService : IDatabaseService
         }
 
         return null;
+    }
+
+    public int GetEventLikeCount(string guid)
+    {
+        var events = _context.Events.Where(e => e.Guid == guid).Include(e => e.Users);
+
+        if (events is not null)
+        {
+            var @event = events.FirstOrDefault();
+
+            if (@event is not null)
+            {
+                return @event.Users.Count;
+            }
+        }
+
+        return 0;
     }
 }
