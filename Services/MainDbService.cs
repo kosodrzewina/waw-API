@@ -39,6 +39,7 @@ public class MainDbService : IDatabaseService
                         Address = e.Address,
                         Image = e.Image,
                         Guid = e.Guid,
+                        IsCurrent = e.IsCurrent,
                         Types = e.Types.Select(t => t.Name).ToList()
                     };
 
@@ -77,6 +78,7 @@ public class MainDbService : IDatabaseService
                         Address = e.Address,
                         Image = e.Image,
                         Guid = e.Guid,
+                        IsCurrent = e.IsCurrent,
                         Types = e.Types.Select(t => t.Name).ToList()
                     };
 
@@ -139,6 +141,7 @@ public class MainDbService : IDatabaseService
                         Address = e.Address,
                         Image = e.Image,
                         Guid = e.Guid,
+                        IsCurrent = e.IsCurrent,
                         Types = e.Types.Select(t => t.Name).ToList()
                     };
 
