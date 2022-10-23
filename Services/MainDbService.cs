@@ -26,6 +26,7 @@ public class MainDbService : IDatabaseService
     {
         return _context.Events
             .Include(e => e.Location)
+            .Include(e => e.Types)
             .ToList()
             .Where(e => e.Guid == guid)
             .Select(
