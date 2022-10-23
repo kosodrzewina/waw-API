@@ -58,12 +58,22 @@ public class EventController : ControllerBase
     [HttpGet("like-count")]
     public IActionResult GetEventLikeCount(string encodedGuid)
     {
-        var guid = System.Text.Encoding.UTF8.GetString(
-            Convert.FromBase64String(encodedGuid)
-        );
-        var likeCount = _databaseService.GetEventLikeCount(guid);
+        try
+        {
+            var guid = System.Text.Encoding.UTF8.GetString(
+                Convert.FromBase64String(encodedGuid)
+            );
+            var likeCount = _databaseService.GetEventLikeCount(guid);
 
-        return Ok(likeCount);
+            return Ok(likeCount);
+        }
+        catch (FormatException e)
+        {
+            Console.WriteLine(e);
+
+            return BadRequest("Given parameter is not a valid Base64 string");
+        }
+
     }
 
     [HttpPut("like")]
