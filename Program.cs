@@ -7,7 +7,7 @@ using WawAPI.Models;
 using WawAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("WawDb");
 
 builder.Services.AddDbContext<MainDbContext>(
