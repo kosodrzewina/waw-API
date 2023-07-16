@@ -67,6 +67,7 @@ public class MainDbService : IDatabaseService
         return _context.Events
             .Include(e => e.Types)
             .Include(e => e.Location)
+            .Include(e => e.Users)
             .ToList()
             .Where(e => e.Types.Intersect(types).Any() && e.IsCurrent)
             .Select(e =>
@@ -79,6 +80,7 @@ public class MainDbService : IDatabaseService
                         Address = e.Address,
                         Image = e.Image,
                         Guid = e.Guid,
+                        LikeCount = e.Users.Count,
                         IsCurrent = e.IsCurrent,
                         Types = e.Types.Select(t => t.Name).ToList()
                     };
